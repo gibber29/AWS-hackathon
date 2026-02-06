@@ -1,6 +1,6 @@
 # C.O.T.E.ai 🎓🤖
 
-**C.O.T.E.ai** is an AI-powered classroom platform designed to maximize student potential and streamline teacher workflows. It provides a high-fidelity, intelligent environment where educational materials transform into interactive learning experiences.
+**C.O.T.E.ai** stands for Classroom of the Elite. It is an AI-powered classroom platform designed to maximize student potential and streamline teacher workflows. It provides a high-fidelity, intelligent environment where educational materials transform into interactive learning experiences.
 
 ## 🚀 Vision
 C.O.T.E.ai bridges the gap between traditional teaching and personal AI tutoring, providing teachers with powerful management tools and students with dynamic, adaptive learning materials.
