@@ -1,0 +1,90 @@
+{
+    "g5l3opq": {
+        "xp": 0,
+        "unlocked_level": 1,
+        "history": [
+            {
+                "level": 1,
+                "score": 2,
+                "max_score": 10,
+                "passed": false,
+                "xp_gained": 0,
+                "timestamp": "0"
+            }
+        ],
+        "mistakes": [
+            {
+                "question": "According to the text, what is the Transformer architecture based on?",
+                "correct_answer": "Attention mechanisms",
+                "explanation": null,
+                "user_answer": "Recurrent neural networks",
+                "level": 1,
+                "comments": "",
+                "timestamp": "0"
+            },
+            {
+                "question": "What does the Transformer dispense with?",
+                "correct_answer": "Recurrence and convolutions",
+                "explanation": null,
+                "user_answer": "Encoder and decoder",
+                "level": 1,
+                "comments": "",
+                "timestamp": "0"
+            },
+            {
+                "question": "What BLEU score did the Transformer achieve on the WMT 2014 English-to-German translation task?",
+                "correct_answer": "28.4",
+                "explanation": null,
+                "user_answer": "26.3",
+                "level": 1,
+                "comments": "",
+                "timestamp": "0"
+            },
+            {
+                "question": "On the WMT 2014 English-to-French translation task, what BLEU score did the Transformer achieve?",
+                "correct_answer": "41.8",
+                "explanation": null,
+                "user_answer": "39.2",
+                "level": 1,
+                "comments": "",
+                "timestamp": "0"
+            },
+            {
+                "question": "What is self-attention sometimes called?",
+                "correct_answer": "Intra-attention",
+                "explanation": null,
+                "user_answer": "Multi-head attention",
+                "level": 1,
+                "comments": "",
+                "timestamp": "0"
+            },
+            {
+                "question": "The encoder maps an input sequence to a sequence of what?",
+                "correct_answer": "Continuous representations",
+                "explanation": null,
+                "user_answer": "Attention weights",
+                "level": 1,
+                "comments": "",
+                "timestamp": "0"
+            },
+            {
+                "question": "How many identical layers are in the encoder stack of the Transformer?",
+                "correct_answer": "6",
+                "explanation": null,
+                "user_answer": "4",
+                "level": 1,
+                "comments": "",
+                "timestamp": "0"
+            },
+            {
+                "question": "What is the dimension of the outputs produced by all sub-layers and embedding layers in the model?",
+                "correct_answer": "512",
+                "explanation": null,
+                "user_answer": "256",
+                "level": 1,
+                "comments": "",
+                "timestamp": "0"
+            }
+        ]
+    }
+}

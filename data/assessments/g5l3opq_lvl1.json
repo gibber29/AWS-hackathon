@@ -1,0 +1,116 @@
+{
+    "level": 1,
+    "timer_seconds": 600,
+    "questions": [
+        {
+            "id": 1,
+            "question": "According to the text, what is the Transformer architecture based on?",
+            "options": [
+                "Recurrent neural networks",
+                "Convolutional neural networks",
+                "Attention mechanisms",
+                "A combination of recurrence and convolutions"
+            ],
+            "correct_answer": "Attention mechanisms"
+        },
+        {
+            "id": 2,
+            "question": "What are the dominant sequence transduction models based on, according to the abstract?",
+            "options": [
+                "Simple linear regressions",
+                "Complex recurrent or convolutional neural networks",
+                "Decision trees",
+                "Support Vector Machines"
+            ],
+            "correct_answer": "Complex recurrent or convolutional neural networks"
+        },
+        {
+            "id": 3,
+            "question": "What does the Transformer dispense with?",
+            "options": [
+                "Attention mechanisms",
+                "Recurrence and convolutions",
+                "Encoder and decoder",
+                "Neural networks"
+            ],
+            "correct_answer": "Recurrence and convolutions"
+        },
+        {
+            "id": 4,
+            "question": "What BLEU score did the Transformer achieve on the WMT 2014 English-to-German translation task?",
+            "options": [
+                "26.3",
+                "28.4",
+                "41.8",
+                "39.2"
+            ],
+            "correct_answer": "28.4"
+        },
+        {
+            "id": 5,
+            "question": "On the WMT 2014 English-to-French translation task, what BLEU score did the Transformer achieve?",
+            "options": [
+                "28.4",
+                "39.2",
+                "41.8",
+                "26.3"
+            ],
+            "correct_answer": "41.8"
+        },
+        {
+            "id": 6,
+            "question": "What is self-attention sometimes called?",
+            "options": [
+                "Inter-attention",
+                "Intra-attention",
+                "Cross-attention",
+                "Multi-head attention"
+            ],
+            "correct_answer": "Intra-attention"
+        },
+        {
+            "id": 7,
+            "question": "The encoder maps an input sequence to a sequence of what?",
+            "options": [
+                "Random numbers",
+                "Continuous representations",
+                "Discrete symbols",
+                "Attention weights"
+            ],
+            "correct_answer": "Continuous representations"
+        },
+        {
+            "id": 8,
+            "question": "How many identical layers are in the encoder stack of the Transformer?",
+            "options": [
+                "4",
+                "6",
+                "8",
+                "12"
+            ],
+            "correct_answer": "6"
+        },
+        {
+            "id": 9,
+            "question": "What is the dimension of the outputs produced by all sub-layers and embedding layers in the model?",
+            "options": [
+                "256",
+                "512",
+                "1024",
+                "2048"
+            ],
+            "correct_answer": "512"
+        },
+        {
+            "id": 10,
+            "question": "What does Multi-Head Attention allow the model to do?",
+            "options": [
+                "Attend to only one representation subspace",
+                "Attend to information from different representation subspaces at different positions",
+                "Ignore information from the input sequence",
+                "Focus on only the most recent input"
+            ],
+            "correct_answer": "Attend to information from different representation subspaces at different positions"
+        }
+    ]
+}

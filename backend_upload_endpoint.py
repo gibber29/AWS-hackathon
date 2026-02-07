@@ -137,6 +137,82 @@ async def upload_files(
     }
 
 # ----------------------------
+# ASSESSMENT ENDPOINTS
+# ----------------------------
+
+class AssessmentRequest(BaseModel):
+    session_id: str
+    level: int
+
+class SubmitRequest(BaseModel):
+    session_id: str
+    level: int
+    score: int
+    max_score: int
+    mistakes: List[dict] = []
+
+@app.get("/api/classrooms")
+async def get_classrooms():
+    """List all available classrooms (uploaded sessions)."""
+    if not os.path.exists(UPLOAD_ROOT):
+        return {"classrooms": []}
+    
+    classrooms = []
+    for name in os.listdir(UPLOAD_ROOT):
+        path = os.path.join(UPLOAD_ROOT, name)
+        if os.path.isdir(path):
+            classrooms.append(name)
+    return {"classrooms": classrooms}
+
+@app.post("/api/assessment/generate")
+async def generate_assessment_endpoint(request: AssessmentRequest):
+    """Generate or retrieve an assessment for a specific level."""
+    from assessment_service import generate_assessment
+    result = generate_assessment(request.session_id, request.level)
+    if "error" in result:
+        raise HTTPException(status_code=500, detail=result["error"])
+    return result
+
+@app.post("/api/assessment/submit")
+async def submit_assessment_endpoint(request: SubmitRequest):
+    """Submit results and calculate XP/Unlocks."""
+    from assessment_service import submit_assessment_result
+    result = submit_assessment_result(
+        request.session_id, 
+        request.level, 
+        request.score, 
+        request.max_score,
+        request.mistakes
+    )
+    return result
+
+@app.get("/api/mistakes/{session_id}")
+async def get_mistakes_endpoint(session_id: str):
+    """Get list of mistakes for a student in a specific classroom."""
+    from assessment_service import get_mistakes
+    return get_mistakes(session_id)
+
+class CommentRequest(BaseModel):
+    session_id: str
+    question: str
+    comment: str
+
+@app.post("/api/mistakes/comment")
+async def add_mistake_comment(request: CommentRequest):
+    """Add or update a comment on a specific mistake."""
+    from assessment_service import update_mistake_comment
+    success = update_mistake_comment(request.session_id, request.question, request.comment)
+    if not success:
+        raise HTTPException(status_code=404, detail="Mistake not found")
+    return {"status": "success"}
+
+@app.get("/api/progress/{session_id}")
+async def get_progress_endpoint(session_id: str):
+    """Get current XP and unlocked levels for a student in a specific classroom."""
+    from assessment_service import get_progress
+    return get_progress(session_id)
+
+# ----------------------------
 # TEACHER REVIEW ENDPOINT
 # ----------------------------
 

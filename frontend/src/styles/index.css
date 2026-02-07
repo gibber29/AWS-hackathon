@@ -46,3 +46,19 @@
     --input: 217.2 32.6% 17.5%;
     --ring: 224.3 76.3% 48%;
 }
+
+@keyframes glow {
+  0% {
+    text-shadow: 0 0 5px rgba(139, 92, 246, 0.3);
+  }
+  50% {
+    text-shadow: 0 0 20px rgba(139, 92, 246, 0.8), 0 0 30px rgba(139, 92, 246, 0.4);
+  }
+  100% {
+    text-shadow: 0 0 5px rgba(139, 92, 246, 0.3);
+  }
+}
+
+.animate-glow {
+  animation: glow 2s ease-in-out infinite;
+}

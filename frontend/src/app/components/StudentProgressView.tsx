@@ -22,11 +22,6 @@ interface StudentProgressViewProps {
     userRole: 'teacher' | 'student';
 }
 
-const MOCK_MISTAKES = [
-    { id: 1, question: "What is the time complexity of QuickSort?", topic: "Algorithms", correct: "O(n log n)", wrong: "O(n)" },
-    { id: 2, question: "Define 'Polymorphism' in OOP.", topic: "Object Oriented Programming", correct: "Ability of an object to take many forms", wrong: "Inheriting properties from parent" },
-    { id: 3, question: "What is the capital of France?", topic: "General Knowledge", correct: "Paris", wrong: "London" }, // Just a filler example
-];
 
 const MOCK_STUDENTS = [
     { id: '1', name: 'Alex Johnson', progress: 85, lastActive: '2 mins ago', status: 'Active', hours: 12.5 },
@@ -41,11 +36,25 @@ export const StudentProgressView: React.FC<StudentProgressViewProps> = ({ onCrea
     const [selectedClassId, setSelectedClassId] = useState<string | null>(null);
     const [isCreatingClass, setIsCreatingClass] = useState(false);
     const [createdCode, setCreatedCode] = useState<string | null>(null);
+    const [mistakes, setMistakes] = useState<any[]>([]);
+    const [loadingMistakes, setLoadingMistakes] = useState(false);
     const [formData, setFormData] = useState({
         subjectName: '',
         batchYear: '',
         grade: ''
     });
+
+    // Fetch real mistakes from backend
+    React.useEffect(() => {
+        if (userRole === 'student') {
+            setLoadingMistakes(true);
+            fetch('http://localhost:8000/api/mistakes/all')
+                .then(res => res.json())
+                .then(data => setMistakes(data))
+                .catch(err => console.error("Failed to load mistakes", err))
+                .finally(() => setLoadingMistakes(false));
+        }
+    }, [userRole]);
 
     // --- STUDENT VIEW ---
     if (userRole === 'student') {
@@ -101,24 +110,37 @@ export const StudentProgressView: React.FC<StudentProgressViewProps> = ({ onCrea
                             </h3>
 
                             <div className="space-y-4">
-                                {MOCK_MISTAKES.map(mistake => (
-                                    <div key={mistake.id} className="p-4 bg-secondary/30 border border-border rounded-2xl space-y-3 hover:border-primary/50 transition-colors group">
-                                        <div className="space-y-1">
-                                            <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{mistake.topic}</span>
-                                            <p className="font-bold text-sm leading-tight">{mistake.question}</p>
-                                        </div>
+                                {loadingMistakes ? (
+                                    <div className="py-10 text-center opacity-50">Loading mistakes...</div>
+                                ) : mistakes.length === 0 ? (
+                                    <div className="py-10 text-center text-muted-foreground italic">No mistakes to review! Great job.</div>
+                                ) : (
+                                    mistakes.slice(0, 5).map((mistake, idx) => (
+                                        <div key={idx} className="p-4 bg-secondary/30 border border-border rounded-2xl space-y-3 hover:border-primary/50 transition-colors group">
+                                            <div className="space-y-1">
+                                                <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                                                    Level {mistake.level} • {mistake.session_id ? 'Section' : 'General'}
+                                                </span>
+                                                <p className="font-bold text-sm leading-tight">{mistake.question}</p>
+                                            </div>
 
-                                        <div className="flex items-center gap-2 text-xs">
-                                            <span className="text-red-500 font-bold line-through opacity-70">{mistake.wrong}</span>
-                                            <ArrowRight size={12} className="text-muted-foreground" />
-                                            <span className="text-green-500 font-bold">{mistake.correct}</span>
-                                        </div>
+                                            <div className="flex items-center gap-2 text-xs">
+                                                <span className="text-red-500 font-bold line-through opacity-70">{mistake.user_answer}</span>
+                                                <ArrowRight size={12} className="text-muted-foreground" />
+                                                <span className="text-green-500 font-bold">{mistake.correct_answer}</span>
+                                            </div>
 
-                                        <button className="w-full py-2 bg-primary/10 text-primary rounded-xl text-xs font-black uppercase tracking-widest hover:bg-primary hover:text-primary-foreground transition-all flex items-center justify-center gap-2">
-                                            <PlayCircle size={14} /> Review Concept
-                                        </button>
-                                    </div>
-                                ))}
+                                            <button className="w-full py-2 bg-primary/10 text-primary rounded-xl text-xs font-black uppercase tracking-widest hover:bg-primary hover:text-primary-foreground transition-all flex items-center justify-center gap-2">
+                                                <PlayCircle size={14} /> Review Concept
+                                            </button>
+                                        </div>
+                                    ))
+                                )}
+                                {mistakes.length > 5 && (
+                                    <p className="text-center text-[10px] text-muted-foreground font-bold uppercase tracking-widest">
+                                        + {mistakes.length - 5} more mistakes to review
+                                    </p>
+                                )}
                             </div>
                         </div>
                     </div>

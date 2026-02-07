@@ -40,12 +40,31 @@ interface ChatbotProps {
 export const Chatbot: React.FC<ChatbotProps> = ({ sessionId }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [language, setLanguage] = useState<'english' | 'hindi' | 'telugu' | null>(null);
+    const [classrooms, setClassrooms] = useState<string[]>([]);
+    const [selectedClassroom, setSelectedClassroom] = useState<string | null>(null);
     const [messages, setMessages] = useState([
         { id: '1', role: 'assistant', content: 'Hi! I\'m your Study Assistant Bot. Please select your preferred language to begin!' }
     ]);
     const [input, setInput] = useState('');
     const [isTyping, setIsTyping] = useState(false);
     const scrollRef = useRef<HTMLDivElement>(null);
+
+    // Fetch classrooms when chatbot opens
+    useEffect(() => {
+        if (isOpen && !sessionId) {
+            fetch('http://localhost:8000/api/classrooms')
+                .then(res => res.json())
+                .then(data => setClassrooms(data.classrooms || []))
+                .catch(err => console.error("Failed to load classrooms", err));
+        }
+    }, [isOpen, sessionId]);
+
+    // Auto-select classroom if sessionId is provided
+    useEffect(() => {
+        if (sessionId) {
+            setSelectedClassroom(sessionId);
+        }
+    }, [sessionId]);
 
     useEffect(() => {
         if (scrollRef.current) {
@@ -63,19 +82,28 @@ export const Chatbot: React.FC<ChatbotProps> = ({ sessionId }) => {
         setMessages(prev => [...prev, welcomeMsg]);
     };
 
+    const handleClassroomSelect = (classroom: string) => {
+        setSelectedClassroom(classroom);
+        const classroomMsg = {
+            id: Date.now().toString(),
+            role: 'assistant',
+            content: `Perfect! I'm now connected to the **${classroom}** classroom. What would you like to know?`
+        };
+        setMessages(prev => [...prev, classroomMsg]);
+    };
+
     const handleSend = async () => {
-        if (!input.trim() || !language) return;
+        if (!input.trim() || !language || !selectedClassroom) return;
 
         const userMsg = { id: Date.now().toString(), role: 'user', content: input };
         setMessages(prev => [...prev, userMsg]);
         setInput('');
         setIsTyping(true);
 
-        const activeSession = sessionId || 'default';
-        console.log("🤖 Chatbot Request:", { activeSession, sessionId, input, language });
+        console.log("🤖 Chatbot Request:", { selectedClassroom, input, language });
 
         try {
-            const url = `http://localhost:8000/ask?session_id=${activeSession}&query=${encodeURIComponent(input)}&language=${language}`;
+            const url = `http://localhost:8000/ask?session_id=${selectedClassroom}&query=${encodeURIComponent(input)}&language=${language}`;
             console.log("🔗 Fetching URL:", url);
             const response = await fetch(url, {
                 method: 'POST',
@@ -206,6 +234,27 @@ export const Chatbot: React.FC<ChatbotProps> = ({ sessionId }) => {
                         </div>
                     )}
 
+                    {language && !selectedClassroom && !sessionId && (
+                        <div className="flex flex-col gap-2 p-4 bg-white/5 rounded-2xl border border-white/10 animate-in fade-in zoom-in-95 duration-300">
+                            <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">Select Classroom</p>
+                            {classrooms.length === 0 ? (
+                                <p className="text-xs text-muted-foreground text-center py-2">No classrooms found. Upload materials first!</p>
+                            ) : (
+                                <div className="flex flex-col gap-2">
+                                    {classrooms.map((classroom) => (
+                                        <button
+                                            key={classroom}
+                                            onClick={() => handleClassroomSelect(classroom)}
+                                            className="py-2.5 px-4 bg-primary/10 hover:bg-primary text-primary hover:text-primary-foreground border border-primary/20 rounded-xl text-sm font-bold transition-all text-left"
+                                        >
+                                            {classroom}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    )}
+
                     {isTyping && (
                         <div className="flex gap-3">
                             <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center">
@@ -221,19 +270,19 @@ export const Chatbot: React.FC<ChatbotProps> = ({ sessionId }) => {
                 </div>
 
                 <div className="p-4 border-t border-white/10 bg-transparent">
-                    <div className={`flex items-center gap-2 bg-white/5 p-2 rounded-2xl border border-white/10 px-4 transition-all focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary ${!language ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                    <div className={`flex items-center gap-2 bg-white/5 p-2 rounded-2xl border border-white/10 px-4 transition-all focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary ${!language || !selectedClassroom ? 'opacity-50 cursor-not-allowed' : ''}`}>
                         <input
                             type="text"
                             value={input}
-                            disabled={!language}
+                            disabled={!language || !selectedClassroom}
                             onChange={(e) => setInput(e.target.value)}
                             onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-                            placeholder={language ? "Ask a doubt..." : "Select language first..."}
+                            placeholder={!language ? "Select language first..." : !selectedClassroom ? "Select classroom first..." : "Ask a doubt..."}
                             className="flex-1 bg-transparent border-none focus:outline-none text-sm font-medium py-2 disabled:cursor-not-allowed"
                         />
                         <button
                             onClick={handleSend}
-                            disabled={!input.trim() || !language}
+                            disabled={!input.trim() || !language || !selectedClassroom}
                             className="p-2 bg-primary text-primary-foreground rounded-xl hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:scale-100"
                         >
                             <Send size={18} />

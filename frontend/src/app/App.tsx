@@ -5,6 +5,7 @@ import { Dashboard } from './components/Dashboard';
 import { MaterialView } from './components/MaterialView';
 import { Chatbot } from './components/Chatbot';
 import { StudentProgressView } from './components/StudentProgressView';
+import { AssessmentPathView } from './components/AssessmentPathView';
 import { LoginView } from './components/LoginView';
 import { Toaster } from 'sonner';
 import { ThemeProvider } from 'next-themes';
@@ -185,6 +186,8 @@ export default function App() {
                                 topics={Object.values(topics)}
                                 userRole={userRole}
                             />
+                        ) : activeTab === 'assessments' ? (
+                            <AssessmentPathView userRole={userRole} />
                         ) : (
                             <Dashboard
                                 topics={Object.values(topics)}
