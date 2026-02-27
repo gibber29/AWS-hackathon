@@ -8,6 +8,20 @@ import { TeacherAssessmentPreview } from './TeacherAssessmentPreview';
 
 interface AssessmentPathViewProps {
     userRole: 'teacher' | 'student' | null;
+    topics?: any[];
+}
+
+interface PracticeQuestion {
+    question: string;
+    options: string[];
+    correct_answer: string;
+    explanation: string;
+}
+
+interface RemedialPlan {
+    diagnosis: string;
+    explanation: string;
+    practice_question: PracticeQuestion;
 }
 
 interface Progress {
@@ -16,11 +30,15 @@ interface Progress {
     current_chapter_title?: string;
     next_chapter_title?: string;
     cooldown_remaining?: number;
-    remedial_plan?: any;
-    history: any[];
+    remedial_plan?: RemedialPlan;
+    history: {
+        score: number;
+        timestamp: string;
+        level: number;
+    }[];
 }
 
-export const AssessmentPathView: React.FC<AssessmentPathViewProps> = ({ userRole }) => {
+export const AssessmentPathView: React.FC<AssessmentPathViewProps> = ({ userRole, topics }: AssessmentPathViewProps) => {
     const [classrooms, setClassrooms] = useState<string[]>([]);
     const [selectedClassroom, setSelectedClassroom] = useState<string | null>(null);
     const [progress, setProgress] = useState<Progress | null>(null);
@@ -34,7 +52,7 @@ export const AssessmentPathView: React.FC<AssessmentPathViewProps> = ({ userRole
 
     // Fetch Classrooms on mount
     useEffect(() => {
-        fetch('http://localhost:8000/api/classrooms')
+        fetch('http://127.0.0.1:8000/api/classrooms')
             .then(res => res.json())
             .then(data => setClassrooms(data.classrooms || []))
             .catch(err => console.error("Failed to load classrooms", err));
@@ -49,7 +67,7 @@ export const AssessmentPathView: React.FC<AssessmentPathViewProps> = ({ userRole
 
     const fetchProgress = () => {
         if (!selectedClassroom) return;
-        fetch(`http://localhost:8000/api/progress/${selectedClassroom}`)
+        fetch(`http://127.0.0.1:8000/api/progress/${selectedClassroom}`)
             .then(res => res.json())
             .then(data => {
                 setProgress(data);
@@ -117,7 +135,7 @@ export const AssessmentPathView: React.FC<AssessmentPathViewProps> = ({ userRole
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {classrooms.map((cls) => (
+                        {classrooms.map((cls: string) => (
                             <motion.div
                                 key={cls}
                                 whileHover={{ scale: 1.02 }}
@@ -143,7 +161,23 @@ export const AssessmentPathView: React.FC<AssessmentPathViewProps> = ({ userRole
         );
     }
 
-    // --- VIEW: QUEST PATH ---
+    // Sync Cooldown Locally
+    useEffect(() => {
+        if (!progress?.cooldown_remaining || progress.cooldown_remaining <= 0) return;
+
+        const timer = setInterval(() => {
+            setProgress((prev: Progress | null) => {
+                if (!prev || !prev.cooldown_remaining || prev.cooldown_remaining <= 0) {
+                    clearInterval(timer);
+                    return prev;
+                }
+                return { ...prev, cooldown_remaining: prev.cooldown_remaining - 1 };
+            });
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, [selectedClassroom, (progress?.cooldown_remaining ?? 0) > 0]);
+
     return (
         <div className="p-8 max-w-5xl mx-auto min-h-screen flex flex-col">
             <button
@@ -254,14 +288,17 @@ export const AssessmentPathView: React.FC<AssessmentPathViewProps> = ({ userRole
                     onComplete={handleQuizComplete}
                 />
             )}
-            {progress?.remedial_plan && (
-                <RemedialModal
-                    isOpen={isRemedialOpen}
-                    onClose={() => setIsRemedialOpen(false)}
-                    plan={progress.remedial_plan}
-                    cooldownRemaining={progress.cooldown_remaining || 0}
-                />
-            )}
+            <RemedialModal
+                isOpen={isRemedialOpen}
+                onClose={() => setIsRemedialOpen(false)}
+                plan={progress?.remedial_plan ?? null}
+                cooldownRemaining={progress?.cooldown_remaining ?? 0}
+                sessionId={selectedClassroom || ''}
+                onSuccess={() => {
+                    setIsRemedialOpen(false);
+                    fetchProgress();
+                }}
+            />
         </div>
     );
 };

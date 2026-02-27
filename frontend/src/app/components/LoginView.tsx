@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { BookOpen, GraduationCap, ArrowLeft, Lock, User, AlertCircle } from 'lucide-react';
+import { BookOpen, GraduationCap, ArrowLeft, Lock, User, AlertCircle, Zap } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface LoginViewProps {
-    onLogin: (role: 'teacher' | 'student') => void;
+    onLogin: (role: 'teacher' | 'student', track: 'institution' | 'individual') => void;
 }
 
 export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
@@ -16,10 +16,13 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
     const [teacherMousePos, setTeacherMousePos] = useState({ x: 0, y: 0 });
     const [studentMousePos, setStudentMousePos] = useState({ x: 0, y: 0 });
 
-    const handleRoleSelect = (role: 'teacher' | 'student') => {
+    const handleRoleSelect = (role: 'teacher' | 'student', track: 'institution' | 'individual') => {
         setSelectedRole(role);
+        setTrack(track);
         setStep('credentials');
     };
+
+    const [track, setTrack] = useState<'institution' | 'individual'>('institution');
 
     const handleLogin = (e: React.FormEvent) => {
         e.preventDefault();
@@ -31,11 +34,11 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
             const normalizedPassword = password.trim();
 
             const isValid = (selectedRole === 'teacher' && normalizedUsername === 'teacher' && normalizedPassword === 'password123') ||
-                (selectedRole === 'student' && normalizedUsername === 'student' && normalizedPassword === 'password123');
+                (selectedRole === 'student' && (normalizedUsername === 'student' || normalizedUsername === 'individual') && normalizedPassword === 'password123');
 
             if (isValid) {
                 toast.success('Login successful!');
-                onLogin(selectedRole!);
+                onLogin(selectedRole!, track);
             } else {
                 toast.error('Invalid credentials. Hint: use role name as username and "password123"');
                 setIsLoading(false);
@@ -78,61 +81,97 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
                         <div className="space-y-6">
                             <div className="space-y-1">
                                 <h2 className="text-2xl font-black">Choose your path</h2>
-                                <p className="text-sm text-muted-foreground">Select your role to access your personalized portal.</p>
+                                <p className="text-sm text-muted-foreground">Select how you'll be using C.O.T.E.ai today.</p>
                             </div>
 
-                            <div className="grid grid-cols-1 gap-4">
-                                <button
-                                    onMouseMove={(e) => {
-                                        const rect = e.currentTarget.getBoundingClientRect();
-                                        setTeacherMousePos({
-                                            x: e.clientX - rect.left,
-                                            y: e.clientY - rect.top
-                                        });
-                                    }}
-                                    onClick={() => handleRoleSelect('teacher')}
-                                    className="relative overflow-hidden flex items-center gap-6 p-6 bg-secondary/30 border-2 border-transparent hover:border-green-500 hover:shadow-[0_0_25px_rgba(34,197,94,0.1)] rounded-3xl transition-all group text-left"
-                                >
-                                    <div
-                                        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-                                        style={{
-                                            background: `radial-gradient(circle at ${teacherMousePos.x}px ${teacherMousePos.y}px, rgba(34,197,94,0.2) 0%, transparent 80%)`
-                                        }}
-                                    />
-                                    <div className="relative z-10 w-14 h-14 bg-green-500/10 text-green-500 rounded-2xl flex items-center justify-center group-hover:bg-green-500 group-hover:text-white transition-all duration-300">
-                                        <BookOpen size={28} />
-                                    </div>
-                                    <div className="relative z-10">
-                                        <span className="block font-black text-lg group-hover:text-green-500 transition-colors">Teacher</span>
-                                        <span className="text-xs text-muted-foreground font-medium">Manage classes & track progress</span>
-                                    </div>
-                                </button>
+                            <div className="space-y-8 contents">
+                                {/* Institution Section */}
+                                <div className="space-y-3">
+                                    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/70 ml-2">Institution Use</h3>
+                                    <div className="grid grid-cols-1 gap-3">
+                                        <button
+                                            onMouseMove={(e) => {
+                                                const rect = e.currentTarget.getBoundingClientRect();
+                                                setTeacherMousePos({
+                                                    x: e.clientX - rect.left,
+                                                    y: e.clientY - rect.top
+                                                });
+                                            }}
+                                            onClick={() => handleRoleSelect('teacher', 'institution')}
+                                            className="relative overflow-hidden flex items-center gap-6 p-5 bg-secondary/30 border-2 border-transparent hover:border-green-500 hover:shadow-[0_0_25px_rgba(34,197,94,0.1)] rounded-3xl transition-all group text-left"
+                                        >
+                                            <div
+                                                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                                                style={{
+                                                    background: `radial-gradient(circle at ${teacherMousePos.x}px ${teacherMousePos.y}px, rgba(34,197,94,0.2) 0%, transparent 80%)`
+                                                }}
+                                            />
+                                            <div className="relative z-10 w-12 h-12 bg-green-500/10 text-green-500 rounded-2xl flex items-center justify-center group-hover:bg-green-500 group-hover:text-white transition-all duration-300">
+                                                <BookOpen size={24} />
+                                            </div>
+                                            <div className="relative z-10">
+                                                <span className="block font-black text-lg group-hover:text-green-500 transition-colors leading-none mb-1">Teacher</span>
+                                                <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">Manage your classroom</span>
+                                            </div>
+                                        </button>
 
-                                <button
-                                    onMouseMove={(e) => {
-                                        const rect = e.currentTarget.getBoundingClientRect();
-                                        setStudentMousePos({
-                                            x: e.clientX - rect.left,
-                                            y: e.clientY - rect.top
-                                        });
-                                    }}
-                                    onClick={() => handleRoleSelect('student')}
-                                    className="relative overflow-hidden flex items-center gap-6 p-6 bg-secondary/30 border-2 border-transparent hover:border-blue-500 hover:shadow-[0_0_25px_rgba(59,130,246,0.1)] rounded-3xl transition-all group text-left"
-                                >
-                                    <div
-                                        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-                                        style={{
-                                            background: `radial-gradient(circle at ${studentMousePos.x}px ${studentMousePos.y}px, rgba(59,130,246,0.2) 0%, transparent 80%)`
+                                        <button
+                                            onMouseMove={(e) => {
+                                                const rect = e.currentTarget.getBoundingClientRect();
+                                                setStudentMousePos({
+                                                    x: e.clientX - rect.left,
+                                                    y: e.clientY - rect.top
+                                                });
+                                            }}
+                                            onClick={() => handleRoleSelect('student', 'institution')}
+                                            className="relative overflow-hidden flex items-center gap-6 p-5 bg-secondary/30 border-2 border-transparent hover:border-blue-500 hover:shadow-[0_0_25px_rgba(59,130,246,0.1)] rounded-3xl transition-all group text-left"
+                                        >
+                                            <div
+                                                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                                                style={{
+                                                    background: `radial-gradient(circle at ${studentMousePos.x}px ${studentMousePos.y}px, rgba(59,130,246,0.2) 0%, transparent 80%)`
+                                                }}
+                                            />
+                                            <div className="relative z-10 w-12 h-12 bg-blue-500/10 text-blue-500 rounded-2xl flex items-center justify-center group-hover:bg-blue-500 group-hover:text-white transition-all duration-300">
+                                                <GraduationCap size={24} />
+                                            </div>
+                                            <div className="relative z-10">
+                                                <span className="block font-black text-lg group-hover:text-blue-500 transition-colors leading-none mb-1">Student</span>
+                                                <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">Join your school class</span>
+                                            </div>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Personal Use Section */}
+                                <div className="space-y-3 pt-4 border-t border-border/10">
+                                    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-orange-500/70 ml-2">Personal Use</h3>
+                                    <button
+                                        onMouseMove={(e) => {
+                                            const rect = e.currentTarget.getBoundingClientRect();
+                                            setStudentMousePos({
+                                                x: e.clientX - rect.left,
+                                                y: e.clientY - rect.top
+                                            });
                                         }}
-                                    />
-                                    <div className="relative z-10 w-14 h-14 bg-blue-500/10 text-blue-500 rounded-2xl flex items-center justify-center group-hover:bg-blue-500 group-hover:text-white transition-all duration-300">
-                                        <GraduationCap size={28} />
-                                    </div>
-                                    <div className="relative z-10">
-                                        <span className="block font-black text-lg group-hover:text-blue-500 transition-colors">Student</span>
-                                        <span className="text-xs text-muted-foreground font-medium">Access materials & AI assistant</span>
-                                    </div>
-                                </button>
+                                        onClick={() => handleRoleSelect('student', 'individual')}
+                                        className="w-full relative overflow-hidden flex items-center gap-6 p-5 bg-secondary/30 border-2 border-transparent hover:border-orange-500 hover:shadow-[0_0_25px_rgba(249,115,22,0.1)] rounded-3xl transition-all group text-left"
+                                    >
+                                        <div
+                                            className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                                            style={{
+                                                background: `radial-gradient(circle at ${studentMousePos.x}px ${studentMousePos.y}px, rgba(249,115,22,0.2) 0%, transparent 80%)`
+                                            }}
+                                        />
+                                        <div className="relative z-10 w-12 h-12 bg-orange-500/10 text-orange-500 rounded-2xl flex items-center justify-center group-hover:bg-orange-500 group-hover:text-white transition-all duration-300">
+                                            <Zap size={24} />
+                                        </div>
+                                        <div className="relative z-10">
+                                            <span className="block font-black text-lg group-hover:text-orange-500 transition-colors leading-none mb-1">Individual Learner</span>
+                                            <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">Solo learning path</span>
+                                        </div>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     ) : (

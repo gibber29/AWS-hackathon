@@ -75,8 +75,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                     <Bell size={20} />
                     <span className="absolute top-2 right-2 w-2 h-2 bg-destructive rounded-full border-2 border-background"></span>
                 </button>
-                <div className="ml-2 w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-semibold cursor-pointer">
-                    S
+                <div className={`ml-2 w-8 h-8 rounded-full ${userRole === 'teacher' ? 'bg-green-600' : (title?.includes('Individual') || title?.includes('Personal') ? 'bg-orange-600' : 'bg-blue-600')} flex items-center justify-center text-white font-semibold cursor-pointer`}>
+                    {userRole === 'teacher' ? 'T' : (title?.includes('Individual') || title?.includes('Personal') ? 'U1' : 'S')}
                 </div>
             </div>
         </header>

@@ -1,0 +1,209 @@
+{
+    "title": "Ace Your AI Engineering Interview in 30 Days",
+    "description": "A comprehensive roadmap to prepare you for an AI Engineering interview in 30 days, covering essential technical skills, system design principles, and behavioral interview techniques.",
+    "total_days": 30,
+    "weeks": [
+        {
+            "week_number": 1,
+            "goal": "Solidify Machine Learning Fundamentals and Python Proficiency",
+            "days": [
+                {
+                    "day_number": 1,
+                    "topic": "Python for AI Engineering: Data Structures",
+                    "learning_objectives": [
+                        "Understand and implement lists, dictionaries, sets, and tuples in Python.",
+                        "Learn about time complexity for each data structure."
+                    ],
+                    "youtube_video_title": "Python Data Structures and Algorithms - Full Course",
+                    "youtube_video_url": "https://www.youtube.com/watch?v=pkYVdH_n_Sk",
+                    "reference_content": "Python offers several built-in data structures, each with unique characteristics and use cases. Understanding these is crucial for efficient coding in AI.\n\n**1. Lists:**\n   - Ordered and mutable (changeable) collections of items.\n   - Defined using square brackets `[]`.\n   - Items can be of different data types.\n   - Example:\n     ```python\n     my_list = [1, 'hello', 3.14]\n     print(my_list)  # Output: 1\n     ```\n   - Common methods: `append()`, `insert()`, `remove()`, `pop()`, `sort()`.\n\n**2. Dictionaries:**\n   - Unordered collections of key-value pairs.\n   - Defined using curly braces `{}`.\n   - Keys must be unique and immutable (e.g., strings, numbers, tuples).\n   - Values can be of any data type.\n   - Example:\n     ```python\n     my_dict = {'name': 'Alice', 'age': 30}\n     print(my_dict['name'])  # Output: Alice\n     ```\n   - Common methods: `get()`, `keys()`, `values()`, `items()`, `update()`.\n\n**3. Sets:**\n   - Unordered collections of unique items.\n   - Defined using curly braces `{}` or the `set()` constructor.\n   - Useful for removing duplicates and performing set operations.\n   - Example:\n     ```python\n     my_set = {1, 2, 3, 3}\n     print(my_set)  # Output: {1, 2, 3}\n     ```\n   - Common methods: `add()`, `remove()`, `discard()`, `union()`, `intersection()`.\n\n**4. Tuples:**\n   - Ordered and immutable collections of items.\n   - Defined using parentheses `()`.\n   - Similar to lists, but cannot be modified after creation.\n   - Example:\n     ```python\n     my_tuple = (1, 2, 3)\n     print(my_tuple)  # Output: 1\n     ```\n   - Common uses: representing fixed collections of data, returning multiple values from a function.\n\n**Time Complexity:**\n   - **Lists:** Accessing an element by index is O(1). Inserting or deleting at the end is O(1), but at the beginning is O(n).\n   - **Dictionaries:** Average case for `get()`, `set()`, and `delete()` is O(1). Worst case is O(n).\n   - **Sets:** Average case for `add()`, `remove()`, and `contains()` is O(1). Worst case is O(n).\n   - **Tuples:** Accessing an element by index is O(1).\n\nUnderstanding when to use each data structure is vital. Lists are versatile for ordered data, dictionaries for key-value lookups, sets for unique elements, and tuples for immutable data.",
+                    "questions": [
+                        {
+                            "question": "Explain the difference between a list and a tuple in Python. When would you use one over the other?",
+                            "type": "recall"
+                        },
+                        {
+                            "question": "You are given a large dataset of user IDs. How would you efficiently remove duplicate IDs using Python data structures?",
+                            "type": "application"
+                        }
+                    ]
+                },
+                {
+                    "day_number": 2,
+                    "topic": "Python for AI Engineering: Essential Libraries (NumPy)",
+                    "learning_objectives": [
+                        "Understand NumPy arrays and their advantages.",
+                        "Learn to perform array operations, indexing, and slicing using NumPy."
+                    ],
+                    "youtube_video_title": "NumPy Tutorial for Beginners",
+                    "youtube_video_url": "https://www.youtube.com/watch?v=GB9ByFAwHAA",
+                    "reference_content": "NumPy (Numerical Python) is a fundamental library for numerical computing in Python. It provides support for large, multi-dimensional arrays and matrices, along with a collection of mathematical functions to operate on these arrays efficiently. It's a cornerstone for many AI and machine learning tasks.\n\n**Key Concepts:**\n\n*   **Arrays:** The core of NumPy is the `ndarray` (n-dimensional array) object. Unlike Python lists, NumPy arrays are homogeneous, meaning they contain elements of the same data type. This allows for more efficient storage and computation.\n\n    ```python\n    import numpy as np\n\n    # Creating a NumPy array from a list\n    my_list =\n    my_array = np.array(my_list)\n    print(my_array)\n    # Output: [1 2 3 4 5]\n\n    print(type(my_array))\n    # Output: <class 'numpy.ndarray'>\n    ```\n*   **Data Types:** NumPy arrays have a specific data type (`dtype`) associated with them, such as `int32`, `float64`, `bool`, etc. You can specify the data type when creating an array.\n\n    ```python\n    # Creating an array with a specific data type\n    float_array = np.array(, dtype=np.float64)\n    print(float_array.dtype)\n    # Output: float64\n    ```\n\n**Array Operations:**\n\n*   **Basic Arithmetic:** NumPy arrays support element-wise arithmetic operations.\n\n    ```python\n    a = np.array()\n    b = np.array()\n\n    print(a + b)  # Element-wise addition: [5 7 9]\n    print(a * b)  # Element-wise multiplication: [ 4 10 18]\n    print(a / b)  # Element-wise division\n    ```\n*   **Broadcasting:** NumPy can perform operations on arrays with different shapes under certain conditions. This is called broadcasting.\n\n*   **Indexing and Slicing:** Similar to Python lists, you can access elements and subarrays using indexing and slicing.\n\n    ```python\n    my_array = np.array([,,])\n\n    print(my_array)  # Accessing element at row 0, column 0: 1\n    print(my_array[0, :])   # Accessing the entire first row: [1 2 3]\n    print(my_array[:, 0])   # Accessing the entire first column: [1 4 7]\n    ```\n*   **Array Manipulation:**\n    *   `reshape()`: Changes the shape of an array.\n    *   `transpose()`: Transposes an array.\n    *   `concatenate()`: Joins arrays along an existing axis.\n    *   `split()`: Splits an array into multiple sub-arrays.\n\n**Key Functions:**\n\n*   `np.array()`: Creates a NumPy array.\n*   `np.zeros()`: Creates an array filled with zeros.\n*   `np.ones()`: Creates an array filled with ones.\n*   `np.arange()`: Creates an array with a sequence of numbers.\n*   `np.linspace()`: Creates an array with evenly spaced numbers over a specified interval.\n*   `np.random.rand()`: Creates an array with random numbers from a uniform distribution.\n\nNumPy is essential for numerical tasks in AI, including data preprocessing, model implementation, and evaluation. Its efficient array operations and mathematical functions make it a powerful tool for any AI engineer.",
+                    "questions": [
+                        {
+                            "question": "What are the advantages of using NumPy arrays over Python lists for numerical computations?",
+                            "type": "recall"
+                        },
+                        {
+                            "question": "How can you reshape a NumPy array from a 1D array of 12 elements into a 2D array of shape (3, 4)? Provide the code.",
+                            "type": "application"
+                        }
+                    ]
+                },
+                {
+                    "day_number": 3,
+                    "topic": "Python for AI Engineering: Essential Libraries (Pandas)",
+                    "learning_objectives": [
+                        "Understand Pandas Series and DataFrames.",
+                        "Learn to perform data cleaning, manipulation, and analysis using Pandas."
+                    ],
+                    "youtube_video_title": "Pandas Tutorial for Beginners",
+                    "youtube_video_url": "https://www.youtube.com/watch?v=kxFQvGj9tqM",
+                    "reference_content": "Pandas is a powerful Python library providing data structures and data analysis tools. It's particularly well-suited for working with structured data (tabular, spreadsheet-like data). Two core data structures in Pandas are Series and DataFrames.\n\n**1. Series:**\n   - A one-dimensional labeled array capable of holding any data type (integers, strings, floats, Python objects, etc.).\n   - Similar to a NumPy array, but with explicit row labels (index).\n\n   ```python\n   import pandas as pd\n\n   # Creating a Series from a list\n   my_series = pd.Series()\n   print(my_series)\n   # Output:\n   # 0    10\n   # 1    20\n   # 2    30\n   # 3    40\n   # dtype: int64\n\n   # Creating a Series with a custom index\n   my_series = pd.Series(, index=['a', 'b', 'c', 'd'])\n   print(my_series)\n   # Output:\n   # a    10\n   # b    20\n   # c    30\n   # d    40\n   # dtype: int64\n   ```\n\n**2. DataFrame:**\n   - A two-dimensional labeled data structure with columns of potentially different data types.\n   - Can be thought of as a table or a spreadsheet.\n   - Most commonly used Pandas object.\n\n   ```python\n   # Creating a DataFrame from a dictionary\n   data = {'name': ['Alice', 'Bob', 'Charlie'],\n           'age':,\n           'city': ['New York', 'London', 'Paris']}\n   my_dataframe = pd.DataFrame(data)\n   print(my_dataframe)\n   # Output:\n   #        name  age      city\n   # 0     Alice   25  New York\n   # 1       Bob   30    London\n   # 2  Charlie   28     Paris\n   ```\n\n**Data Manipulation and Analysis:**\n\n*   **Data Cleaning:**\n    *   Handling missing values: `fillna()`, `dropna()`\n    *   Removing duplicates: `drop_duplicates()`\n    *   Data type conversion: `astype()`\n*   **Data Selection and Filtering:**\n    *   Selecting columns: `df['column_name']`\n    *   Selecting rows: `df.loc[]`, `df.iloc[]`\n    *   Filtering data based on conditions: `df[df['age'] > 25]`\n*   **Data Transformation:**\n    *   Adding new columns: `df['new_column'] = ...`\n    *   Applying functions to columns: `df['column'].apply(function)`\n    *   Grouping and aggregating data: `df.groupby('column').sum()`\n*   **Data Analysis:**\n    *   Descriptive statistics: `df.describe()`\n    *   Value counts: `df['column'].value_counts()`\n    *   Correlation analysis: `df.corr()`\n\n**Key Functions:**\n\n*   `pd.Series()`: Creates a Pandas Series.\n*   `pd.DataFrame()`: Creates a Pandas DataFrame.\n*   `pd.read_csv()`: Reads data from a CSV file into a DataFrame.\n*   `pd.read_excel()`: Reads data from an Excel file into a DataFrame.\n*   `df.head()`: Returns the first n rows of a DataFrame.\n*   `df.tail()`: Returns the last n rows of a DataFrame.\n*   `df.info()`: Provides a summary of a DataFrame.\n\nPandas is an indispensable tool for AI engineers for data loading, cleaning, preparation, and exploration. Mastering Pandas allows you to efficiently handle and analyze the data that fuels AI models.",
+                    "questions": [
+                        {
+                            "question": "Explain the difference between a Pandas Series and a DataFrame. What are their respective use cases?",
+                            "type": "recall"
+                        },
+                        {
+                            "question": "You have a DataFrame with missing values. Describe how you would handle these missing values using Pandas. Provide code examples for at least two different methods.",
+                            "type": "application"
+                        }
+                    ]
+                },
+                {
+                    "day_number": 4,
+                    "topic": "Machine Learning Fundamentals: Supervised Learning",
+                    "learning_objectives": [
+                        "Understand the concepts of supervised learning, including classification and regression.",
+                        "Learn about common supervised learning algorithms (Linear Regression, Logistic Regression, Decision Trees)."
+                    ],
+                    "youtube_video_title": "Supervised vs Unsupervised Learning",
+                    "youtube_video_url": "https://www.youtube.com/watch?v=LDRbO9a6XPU",
+                    "reference_content": "Supervised learning is a type of machine learning where an algorithm learns from labeled data. Labeled data means that each data point is tagged with the correct answer (the 'label'). The algorithm's goal is to learn a mapping function that can predict the label for new, unseen data.  There are two main types of supervised learning: regression and classification.\n\n**1. Regression:**\n   - Regression is used when the label is a continuous variable. The goal is to predict a numerical value.\n   - **Example:** Predicting house prices based on features like size, location, and number of bedrooms.\n   - **Common Algorithms:**\n     *   **Linear Regression:**  Models the relationship between the input features and the output variable as a linear equation.  The equation is of the form: `y = mx + b`, where `y` is the predicted value, `x` is the input feature, `m` is the slope, and `b` is the y-intercept.\n     *   **Polynomial Regression:**  Similar to linear regression but allows for a polynomial relationship between the input features and the output variable.\n     *   **Support Vector Regression (SVR):** Uses support vector machines to predict continuous values.\n\n**2. Classification:**\n   - Classification is used when the label is a categorical variable. The goal is to predict which category a data point belongs to.\n   - **Example:**  Classifying emails as spam or not spam based on the content of the email.\n   - **Common Algorithms:**\n     *   **Logistic Regression:**  A linear model that uses a sigmoid function to predict the probability of a data point belonging to a particular class.  The sigmoid function is: `f(x) = 1 / (1 + e^-x)`. The output is a probability between 0 and 1.\n     *   **Decision Trees:**  A tree-like structure where each internal node represents a test on an attribute, each branch represents the outcome of the test, and each leaf node represents a class label.  Decision trees recursively partition the data based on the feature that provides the most information gain.\n     *   **Support Vector Machines (SVM):**  Finds the optimal hyperplane that separates data points of different classes with the largest margin.\n     *   **Naive Bayes:**  Applies Bayes' theorem with strong (naive) independence assumptions between the features.  Bayes' theorem: `P(A|B) = [P(B|A) * P(A)] / P(B)`, where `P(A|B)` is the probability of event A occurring given event B has already occurred.\n     *   **K-Nearest Neighbors (KNN):**  Classifies a data point based on the majority class of its k nearest neighbors.\n\n**General Supervised Learning Process:**\n\n1.  **Data Collection:** Gather labeled data.\n2.  **Data Preprocessing:** Clean and prepare the data for training.\n3.  **Model Selection:** Choose an appropriate supervised learning algorithm.\n4.  **Model Training:** Train the algorithm using the labeled data.\n5.  **Model Evaluation:** Evaluate the performance of the trained model using a separate test dataset.\n6.  **Model Deployment:** Deploy the trained model to make predictions on new, unseen data.",
+                    "questions": [
+                        {
+                            "question": "Explain the difference between regression and classification in supervised learning. Give an example of a problem that would be suitable for each.",
+                            "type": "recall"
+                        },
+                        {
+                            "question": "Describe how a decision tree algorithm works. How does it decide which feature to split on at each node?",
+                            "type": "recall"
+                        }
+                    ]
+                },
+                {
+                    "day_number": 5,
+                    "topic": "Machine Learning Fundamentals: Unsupervised Learning",
+                    "learning_objectives": [
+                        "Understand the concepts of unsupervised learning, including clustering and dimensionality reduction.",
+                        "Learn about common unsupervised learning algorithms (K-Means, PCA)."
+                    ],
+                    "youtube_video_title": "Unsupervised Learning and Clustering Analysis",
+                    "youtube_video_url": "https://www.youtube.com/watch?v=E0916yLQI-U",
+                    "reference_content": "Unsupervised learning is a type of machine learning where the algorithm learns from unlabeled data. The algorithm's goal is to discover hidden patterns, structures, or relationships in the data without any prior knowledge of the correct answers.  Two main types of unsupervised learning are clustering and dimensionality reduction.\n\n**1. Clustering:**\n   - Clustering is used to group similar data points together into clusters.\n   - **Example:** Segmenting customers into different groups based on their purchasing behavior.\n   - **Common Algorithms:**\n     *   **K-Means:**  Partitions the data into k clusters, where each data point belongs to the cluster with the nearest mean (centroid).  The algorithm iteratively assigns data points to the nearest cluster and updates the centroids until the cluster assignments stabilize.\n     *   **Hierarchical Clustering:**  Builds a hierarchy of clusters, either by starting with each data point as its own cluster and merging the closest clusters iteratively (agglomerative), or by starting with a single cluster containing all data points and splitting it recursively (divisive).\n     *   **DBSCAN (Density-Based Spatial Clustering of Applications with Noise):**  Groups together data points that are closely packed together, marking as outliers points that lie alone in low-density regions.\n\n**2. Dimensionality Reduction:**\n   - Dimensionality reduction is used to reduce the number of features in a dataset while preserving the most important information.\n   - **Example:** Reducing the number of genes in a genomic dataset while retaining the genes that are most relevant to a particular disease.\n   - **Common Algorithms:**\n     *   **Principal Component Analysis (PCA):**  Transforms the data into a new coordinate system where the principal components (linear combinations of the original features) capture the most variance in the data.  The algorithm calculates the eigenvectors and eigenvalues of the covariance matrix of the data, and selects the eigenvectors corresponding to the largest eigenvalues as the principal components.\n     *   **t-distributed Stochastic Neighbor Embedding (t-SNE):**  A nonlinear dimensionality reduction technique that is particularly well-suited for visualizing high-dimensional data in a low-dimensional space (e.g., 2D or 3D).  It aims to preserve the local structure of the data, such that similar data points in the high-dimensional space are also close to each other in the low-dimensional space.\n     *   **Autoencoders:** Neural networks that are trained to reconstruct their input. The bottleneck layer in the network learns a compressed representation of the data, effectively reducing the dimensionality.\n\n**General Unsupervised Learning Process:**\n\n1.  **Data Collection:** Gather unlabeled data.\n2.  **Data Preprocessing:** Clean and prepare the data for analysis.\n3.  **Algorithm Selection:** Choose an appropriate unsupervised learning algorithm.\n4.  **Model Training:** Train the algorithm using the unlabeled data.\n5.  **Model Evaluation:** Evaluate the results of the unsupervised learning task.\n6.  **Interpretation:** Interpret the discovered patterns or structures in the data.",
+                    "questions": [
+                        {
+                            "question": "Explain the difference between clustering and dimensionality reduction in unsupervised learning. Give an example of a problem that would be suitable for each.",
+                            "type": "recall"
+                        },
+                        {
+                            "question": "Describe how the K-Means clustering algorithm works. How does it determine the optimal number of clusters?",
+                            "type": "recall"
+                        }
+                    ]
+                },
+                {
+                    "day_number": 6,
+                    "topic": "Model Evaluation and Selection",
+                    "learning_objectives": [
+                        "Learn about common evaluation metrics for classification and regression models.",
+                        "Understand techniques for model selection (cross-validation, hyperparameter tuning)."
+                    ],
+                    "youtube_video_title": "Model Evaluation Metrics",
+                    "youtube_video_url": "https://www.youtube.com/watch?v=G08H-wIj6bg",
+                    "reference_content": "Evaluating the performance of machine learning models is crucial for selecting the best model for a given task. Different evaluation metrics are used for classification and regression models.\n\n**Evaluation Metrics for Classification:**\n\n*   **Accuracy:**  The proportion of correctly classified instances.  Calculated as: `(True Positives + True Negatives) / (Total Number of Instances)`.\n*   **Precision:**  The proportion of correctly predicted positive instances out of all instances predicted as positive.  Calculated as: `True Positives / (True Positives + False Positives)`.\n*   **Recall (Sensitivity):** The proportion of correctly predicted positive instances out of all actual positive instances.  Calculated as: `True Positives / (True Positives + False Negatives)`.\n*   **F1-Score:**  The harmonic mean of precision and recall.  Calculated as: `2 * (Precision * Recall) / (Precision + Recall)`.\n*   **Confusion Matrix:**  A table that summarizes the performance of a classification model by showing the counts of true positives, true negatives, false positives, and false negatives.\n*   **AUC-ROC:**  Area under the Receiver Operating Characteristic curve. The ROC curve plots the true positive rate against the false positive rate at various threshold settings.  AUC measures the ability of the model to distinguish between different classes.\n\n**Evaluation Metrics for Regression:**\n\n*   **Mean Absolute Error (MAE):** The average absolute difference between the predicted values and the actual values.  Calculated as: `(1/n) * \u03a3 |y_i - \u0177_i|`, where `y_i` is the actual value and `\u0177_i` is the predicted value.\n*   **Mean Squared Error (MSE):**  The average squared difference between the predicted values and the actual values.  Calculated as: `(1/n) * \u03a3 (y_i - \u0177_i)^2`.\n*   **Root Mean Squared Error (RMSE):**  The square root of the mean squared error.  Calculated as: `\u221aMSE`.\n*   **R-squared (Coefficient of Determination):**  The proportion of variance in the dependent variable that is predictable from the independent variables.  Ranges from 0 to 1, with higher values indicating a better fit.  Calculated as: `1 - (Sum of Squared Residuals / Total Sum of Squares)`.\n\n**Model Selection Techniques:**\n\n*   **Cross-Validation:**  A technique for evaluating model performance by splitting the data into multiple folds, training the model on a subset of the folds, and evaluating it on the remaining fold.  Common types of cross-validation include k-fold cross-validation and stratified k-fold cross-validation.\n*   **Hyperparameter Tuning:**  The process of finding the optimal values for the hyperparameters of a machine learning model.  Common techniques include grid search and random search.\n\nBy understanding these evaluation metrics and model selection techniques, you can build more accurate and reliable machine learning models.",
+                    "questions": [
+                        {
+                            "question": "Explain the difference between precision and recall in classification. When would you prioritize one over the other?",
+                            "type": "recall"
+                        },
+                        {
+                            "question": "Describe how k-fold cross-validation works. What are the benefits of using cross-validation for model evaluation?",
+                            "type": "recall"
+                        }
+                    ]
+                },
+                {
+                    "day_number": 7,
+                    "topic": "Resume and LinkedIn Optimization",
+                    "learning_objectives": [
+                        "Optimize your resume and LinkedIn profile with AI-related keywords.",
+                        "Showcase relevant projects and experiences."
+                    ],
+                    "youtube_video_title": "How to Write a Resume with ChatGPT, the BEST AI Resume Builder",
+                    "youtube_video_url": "https://www.youtube.com/watch?v=jDBUjJSn9hc",
+                    "reference_content": "Crafting a compelling resume and LinkedIn profile is crucial for landing AI engineering interviews. Here's how to optimize them to showcase your skills and experience:\n\n**1. Keyword Optimization:**\n\n*   **Identify Relevant Keywords:** Research common keywords used in AI engineering job descriptions. These include: Machine Learning, Deep Learning, Natural Language Processing (NLP), Computer Vision, TensorFlow, PyTorch, scikit-learn, Python, Data Analysis, Data Mining, Cloud Computing (AWS, Azure, GCP), Big Data (Spark, Hadoop), Model Deployment, A/B Testing, Experimentation, and specific algorithms (e.g., CNN, RNN, Transformer).\n*   **Incorporate Keywords Naturally:**  Don't just stuff keywords into your resume and profile.  Incorporate them naturally within your descriptions of projects, experiences, and skills.  Use variations of keywords to avoid repetition.\n\n**2. Resume Structure and Content:**\n\n*   **Clear and Concise:** Use a clean and professional format. Keep your resume to one or two pages.\n*   **Summary/Objective:**  Write a brief summary or objective statement that highlights your key skills and experience in AI engineering.  Tailor it to the specific job you're applying for.\n*   **Skills:**  List your technical skills in a dedicated section.  Categorize them (e.g., Programming Languages, Machine Learning Frameworks, Cloud Technologies, Data Analysis Tools).  Indicate your level of proficiency for each skill.\n*   **Projects:**  Showcase your AI engineering projects.  For each project, include:\n    *   **Project Title:**  A clear and descriptive title.\n    *   **Brief Description:**  A concise summary of the project's goal and your role.\n    *   **Technologies Used:**  List the specific technologies and tools you used.\n    *   **Results and Impact:**  Quantify your achievements whenever possible.  For example, \"Improved model accuracy by 15%\" or \"Reduced inference latency by 20%.\"\n*   **Experience:**  Describe your relevant work experience.  Use action verbs to highlight your responsibilities and accomplishments.  Focus on your contributions to AI-related projects.\n*   **Education:**  List your degrees, certifications, and relevant coursework.\n\n**3. LinkedIn Profile Optimization:**\n\n*   **Professional Photo:**  Use a professional headshot.\n*   **Headline:**  Write a compelling headline that summarizes your expertise (e.g., \"AI Engineer | Machine Learning | Deep Learning | NLP\").\n*   **Summary (About Section):**  Write a detailed summary that highlights your skills, experience, and career goals.  Use keywords throughout your summary.\n*   **Experience:**  Describe your work experience in detail, similar to your resume.  Include quantifiable results.\n*   **Skills:**  List your skills and get endorsements from colleagues.\n*   **Recommendations:**  Request recommendations from former colleagues, managers, and professors.\n*   **Connect:**  Connect with other AI professionals and recruiters.\n\nBy optimizing your resume and LinkedIn profile with relevant keywords and showcasing your AI engineering skills and experience, you can significantly increase your chances of landing interviews.",
+                    "questions": [
+                        {
+                            "question": "What are some essential keywords that should be included in an AI Engineer's resume and LinkedIn profile?",
+                            "type": "recall"
+                        },
+                        {
+                            "question": "How can you effectively showcase your AI projects on your resume and LinkedIn profile to impress potential employers?",
+                            "type": "application"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "week_number": 2,
+            "goal": "Deep Dive into Deep Learning and Neural Networks",
+            "days": [
+                {
+                    "day_number": 8,
+                    "topic": "Introduction to Neural Networks",
+                    "learning_objectives": [
+                        "Understand the basic structure of neural networks (neurons, layers, weights, biases).",
+                        "Learn about activation functions and their role in neural networks."
+                    ],
+                    "youtube_video_title": "Neural Networks Demystified",
+                    "youtube_video_url": "https://www.youtube.com/watch?v=W8AeOxQgcAQ",
+                    "reference_content": "Neural networks are the foundation of deep learning, inspired by the structure and function of the human brain. They consist of interconnected nodes called neurons, organized in layers. These networks learn complex patterns from data by adjusting the connections (weights) between neurons.\n\n**Basic Structure:**\n\n*   **Neuron (Node):** The basic building block of a neural network. It receives inputs, performs a weighted sum of these inputs, applies an activation function, and produces an output.\n*   **Weight:**  A numerical value assigned to each connection between neurons. It represents the strength of the connection.  During training, the network adjusts these weights to learn the optimal mapping from inputs to outputs.\n*   **Bias:**  A constant value added to the weighted sum of inputs in a neuron. It allows the neuron to activate even when all inputs are zero.\n*   **Layer:**  A collection of neurons that perform a specific computation.  Neural networks typically have three types of layers:\n    *   **Input Layer:**  Receives the input data.\n    *   **Hidden Layer(s):**  Perform intermediate computations.\n    *   **Output Layer:**  Produces the final output.\n\n**Mathematical Representation of a Neuron:**\n\nLet:\n\n*   `x_1, x_2, ..., x_n` be the inputs to the neuron.\n*   `w_1, w_2, ..., w_n` be the weights associated with each input.\n*   `b` be the bias.\n*   `a` be the activation function.\n*   `y` be the output of the neuron.\n\nThe output of the neuron is calculated as follows:\n\n1.  **Weighted Sum of Inputs:**\n    `z = (w_1 * x_1) + (w_2 * x_2) + ... + (w_n * x_n) + b`\n2.  **Apply Activation Function:**\n    `y = a(z)`\n\n**Activation Functions:**\n\nActivation functions introduce non-linearity into the neural network, allowing it to learn complex patterns.  Common activation functions include:\n\n*   **Sigmoid:**  Squashes the output to a range between 0 and 1.  Formula: `f(x) = 1 / (1 + e^-x)`\n*   **ReLU (Rectified Linear Unit):**  Outputs the input directly if it is positive, otherwise, it outputs 0.  Formula: `f(x) = max(0, x)`\n*   **Tanh (Hyperbolic Tangent):**  Squashes the output to a range between -1 and 1.  Formula: `f(x) = (e^x - e^-x) / (e^x + e^-x)`\n\nBy understanding the basic structure of neural networks and the role of activation functions, you can build and train more complex deep learning models.",
+                    "questions": [
+                        {
+                            "question": "Explain the role of weights and biases in a neural network. How do they contribute to the learning process?",
+                            "type": "recall"
+                        },
+                        {
+                            "question": "Describe the ReLU activation function. What are its advantages and disadvantages compared to the sigmoid activation function?",
+                            "type": "recall"
+                        }
+                    ]
+                },
+                {
+                    "day_number": 9,
+                    "topic": "Deep Learning Frameworks: TensorFlow and Keras",
+                    "learning_objectives": [
+                        "Learn how to build and train neural networks using TensorFlow and Keras.",
+                        "Understand the Keras API for building deep learning models."
+                    ],
+                    "youtube_video_title": "TensorFlow Tutorial for Beginners",
+                    "youtube_video_url": "https://www.youtube.com/watch?v=tPYj3fFJGjk",
+                    "reference_content": "TensorFlow is an open-source machine learning framework developed by Google. Keras is a high-level API that runs on top of TensorFlow (and other frameworks) to simplify the process of building and training neural networks.\n\n**TensorFlow Basics:**\n\n*   **Tensors:** The fundamental data unit in TensorFlow. Tensors are multi-dimensional arrays.\n*   **Variables:** Used to store model parameters (weights and biases) that are updated during training.\n*   **Operations:** Perform computations on tensors and variables.\n*   **Graphs:** TensorFlow uses a graph-based computation model",
+                    "API": "n\nKeras provides a user-friendly API for building deep learning models. It focuses on modularity and ease of use.\n\n*   **Sequential Model:**  A linear stack of layers.\n\n    ```python\n    import tensorflow as tf\n    from tensorflow import keras\n\n    model = keras.Sequential([\n        keras.layers.Dense(128"
+                },
+                {
+                    "API": "A more flexible way to define complex models with multiple inputs and outputs.\n\n*   **Layers:**  Building blocks of neural networks. Common layer types include:\n    *   **Dense (Fully Connected):**  Each neuron is connected to every neuron in the previous layer.\n    *   **Conv2D (Convolutional Layer):**  Used for processing images.\n    *   **MaxPooling2D (Max Pooling Layer):**  Downsamples feature maps.\n    *   **LSTM (Long Short-Term Memory):**  Used for processing sequential data.\n    *   **Embedding:**  Maps discrete tokens (e.g.",
+                    "Keras": "n\n1.  **Compile the Model:** Specify the optimizer, loss function, and metrics.\n\n    ```python\n    model.python\n    model."
+                }
+            ]
+        }
+    ],
+    "id": "66cf5a42-6f78-46cd-a8ac-19ac5c1b5306",
+    "session_id": "default",
+    "created_at": "2026-02-27T12:28:10.581907",
+    "status": "active",
+    "days_completed": 0,
+    "progress_percentage": 0
+}

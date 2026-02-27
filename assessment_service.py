@@ -276,6 +276,19 @@ def spend_xp(session_id: str, amount: int) -> bool:
         return True
     return False
 
+def clear_cooldown(session_id: str):
+    """Clears the remedial plan and retry cooldown for a session."""
+    progress = load_user_progress()
+    if session_id in progress:
+        user_data = progress[session_id]
+        if "remedial_plan" in user_data:
+            del user_data["remedial_plan"]
+        if "retry_available_at" in user_data:
+            del user_data["retry_available_at"]
+        save_user_progress(progress)
+        return True
+    return False
+
 def load_user_progress():
     if os.path.exists(PROGRESS_FILE):
         with open(PROGRESS_FILE, "r") as f:

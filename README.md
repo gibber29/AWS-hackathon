@@ -26,7 +26,18 @@ C.O.T.E.ai bridges the gap between traditional teaching and personal AI tutoring
   - Personal comment/note system for self-reflection and learning
   - Global mistakes view aggregating errors from all classroom sessions
 - **Live Progress Dashboard**: Track your XP growth, weekly improvement metrics, and review recent mistakes
+- **Multi-language Support**: Flashcards and AI revision available in **English, Hindi, Telugu, and Hinglish**.
 - **C.O.T.E.ai Doubt Assistant**: A premium, glassmorphism-styled floating chatbot for instant doubt clarification using RAG.
+
+### 👤 Individual Learner Section
+- **Personalized Roadmaps**: AI-generated learning paths based on your specific goals and timeline.
+- **Daily Learning Objectives**: Day-by-day breakdown of topics with integrated YouTube resources.
+- **In-depth Reference Material**: Rich, comprehensive learning content provided for every day of the roadmap.
+- **Progress Tracking**: Holistic view of roadmap completion and quiz performance.
+
+### 🛠️ Personalization & RAG Refinement
+- **Teacher Review Documents**: Teachers can upload supplementary notes or feedback to refine the AI's understanding of specific student gaps.
+- **Dynamic Context Injection**: AI responses are grounded in both core materials and personalized teacher guidance.
 
 ## 🏗️ Project Structure
 
@@ -36,12 +47,15 @@ C.O.T.E.ai bridges the gap between traditional teaching and personal AI tutoring
 │   ├── src/app/          # Core layout and role selection
 │   ├── src/components/   # Navbar, Sidebar, Chatbot, etc.
 │   └── src/styles/       # Design system and theme configuration
-├── api/                  # FastAPI Backend (Python)
-│   ├── ingestion_pipeline.py  # Advanced PDF processing and ingestion
-│   ├── retrieval_service.py   # RAG-based query engine using Gemini 2.0 Flash
-│   └── backend_upload_endpoint.py # API endpoints for file and session management
+├── main.py               # Main FastAPI entry point and API routes
+├── ingestion_pipeline.py  # Advanced PDF processing and ingestion
+├── retrieval_service.py   # RAG-based query engine using Gemini 2.0 Flash
+├── roadmap_service.py     # AI Roadmap generation and management
+├── assessment_service.py  # Gamified quiz engine and state management
+├── flashcard_service.py   # Multi-language flashcard generation
+├── data/                  # Persistent data storage (roadmaps, assessments, progress)
 ├── chroma_db/            # Vector database for high-speed retrieval
-└── uploads/              # Storage for classroom materials
+└── uploads/              # Storage for classroom materials and teacher reviews
 ```
 
 ## 🚀 Getting Started
@@ -67,7 +81,7 @@ C.O.T.E.ai bridges the gap between traditional teaching and personal AI tutoring
    ```
 4. Start the API:
    ```bash
-   uvicorn backend_upload_endpoint:app --reload
+   uvicorn main:app --reload
    ```
 
 ### Setting up the Frontend

@@ -19,7 +19,11 @@ load_dotenv(override=True)
 CHROMA_PATH = "./chroma_db"
 LOCAL_EMBEDDINGS = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
 # Temperature set to 0.2 for creative analogies while staying grounded
-llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash", temperature=0.2)
+llm = ChatGoogleGenerativeAI(
+    model="gemini-2.0-flash", 
+    temperature=0.2,
+    model_kwargs={"tools": [{"google_search": {}}]}
+)
 
 @retry(
     stop=stop_after_attempt(5),
@@ -53,9 +57,10 @@ Rules for your response:
 7. **Visual Aids**: Use Mermaid.js flowchart syntax for processes or hierarchies. 
 8. **Formatting**: Use bold text for key terms and bullet points. Do not include internal structural tags or step indices in the text.
 9. **Analogies**: Always provide at least one analogy for complex concepts.
+10. **Google Search**: You have access to Google Search. If the provided context is insufficient or if the user asks about recent events, latest breakthroughs, or information outside the documents, use Google Search to provide accurate, grounded information. Always prioritize the teacher's documents for core course topics.
 """
 
-def get_doubt_assistant_response(query: str, session_id: str, language: str = "english"):
+def get_doubt_assistant_response(query: str, session_id: str, language: str = "english", is_individual: bool = False):
     """
     Main retrieval pipeline for the Doubt Assistant.
     """
@@ -68,17 +73,19 @@ def get_doubt_assistant_response(query: str, session_id: str, language: str = "e
 
     # 3. Retrieve context from Vector DB
     print(f"🔍 Searching ChromaDB for session: {session_id} with query: {query}")
-    results = db.max_marginal_relevance_search(
-        query, 
-        k=8, 
-        fetch_k=20, 
-        lambda_mult=0.5, 
-        filter={"session_id": session_id}
-    )
+    results = []
+    if session_id and session_id != "undefined":
+        results = db.max_marginal_relevance_search(
+            query, 
+            k=8, 
+            fetch_k=20, 
+            lambda_mult=0.5, 
+            filter={"session_id": session_id}
+        )
     print(f"📊 Found {len(results)} chunks in ChromaDB")
     
-    if not results:
-        # Fallback to general search if no session-specific data
+    if not results and not is_individual:
+        # Fallback to general search if no session-specific data (only for Institution track)
         print("⚠️ No session-specific results found. Checking without filter...")
         results = db.max_marginal_relevance_search(
             query,
@@ -93,8 +100,18 @@ def get_doubt_assistant_response(query: str, session_id: str, language: str = "e
 
     # 3. Format Context
     context_text = ""
-    for i, doc in enumerate(results):
-        context_text += f"\n--- SOURCE CHUNK {i+1} ---\n{doc.page_content}\n"
+    if results:
+        for i, doc in enumerate(results):
+            context_text += f"\n--- SOURCE CHUNK {i+1} ---\n{doc.page_content}\n"
+    else:
+        context_text = "No specific document context available. Answer as a general educational assistant."
+
+    # 4. Multilingual Prompt logic
+    lang_instruction = ""
+    if language.lower() == "hindi":
+        lang_instruction = "\n**LANGUAGE RULE**: Respond in a mix of Hindi and English. Explain the concepts in Hindi, but keep all technical terms, definitions, and context-specific labels in English exactly as they appear in any provided documentation. speak in a natural 'Hinglish' style."
+    elif language.lower() == "telugu":
+        lang_instruction = "\n**LANGUAGE RULE**: Respond in a mix of Telugu and English. Explain the concepts in Telugu, but keep all technical terms, definitions, and context-specific labels in English exactly as they appear in any provided documentation."
 
     # 4. Multilingual Prompt logic
     lang_instruction = ""

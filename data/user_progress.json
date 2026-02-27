@@ -1,6 +1,6 @@
 {
     "g5l3opq": {
-        "xp": 1060,
+        "xp": 1100,
         "unlocked_level": 1,
         "history": [
             {
@@ -86,5 +86,11 @@
                 "timestamp": "0"
             }
         ]
+    },
+    "fmflkji": {
+        "xp": 80,
+        "mistakes": [],
+        "history": [],
+        "unlocked_level": 1
     }
 }

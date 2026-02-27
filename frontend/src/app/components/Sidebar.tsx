@@ -16,8 +16,11 @@ interface SidebarProps {
     activeTab: string;
     setActiveTab: (tab: string) => void;
     userRole: 'teacher' | 'student';
+    track: 'institution' | 'individual';
+    setTrack: (track: 'institution' | 'individual') => void;
     onLogout: () => void;
     onOpenReviewModal?: () => void;
+    onSelectRoadmap?: (id: string) => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -26,10 +29,26 @@ export const Sidebar: React.FC<SidebarProps> = ({
     activeTab,
     setActiveTab,
     userRole,
+    track,
+    setTrack,
     onLogout,
-    onOpenReviewModal
+    onOpenReviewModal,
+    onSelectRoadmap
 }) => {
     const isTeacher = userRole === 'teacher';
+    const [roadmaps, setRoadmaps] = React.useState<any[]>([]);
+
+    React.useEffect(() => {
+        if (track === 'individual') {
+            fetch('http://localhost:8000/api/roadmaps/default')
+                .then(res => res.json())
+                .then(data => setRoadmaps(Array.isArray(data) ? data : []))
+                .catch(err => {
+                    console.error("Failed to fetch roadmaps in sidebar:", err);
+                    setRoadmaps([]);
+                });
+        }
+    }, [track]);
 
     const menuItems = [
         { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -52,10 +71,35 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 </button>
             </div>
 
-            <nav className="flex-1 py-4 px-2 space-y-1">
-                {menuItems.map((item) => (
+            <nav className="flex-1 py-4 px-2 space-y-1 overflow-y-auto">
+                {/* Track Switcher */}
+                {track === 'institution' && (
+                    <div className="px-2 mb-6 space-y-2">
+                        {isOpen && <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground px-2">Learning Track</p>}
+                        <div className={`flex ${isOpen ? 'flex-row' : 'flex-col'} gap-1 p-1 bg-accent/50 rounded-xl`}>
+                            <button
+                                onClick={() => setTrack('institution')}
+                                className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-black transition-all bg-primary text-primary-foreground shadow-md"
+                                title="Institution Track"
+                            >
+                                <Library size={16} />
+                                {isOpen && <span>INSTITUTION</span>}
+                            </button>
+                            <button
+                                onClick={() => setTrack('individual')}
+                                className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-black transition-all hover:bg-accent text-muted-foreground"
+                                title="Individual Track"
+                            >
+                                <Zap size={16} />
+                                {isOpen && <span>INDIVIDUAL</span>}
+                            </button>
+                        </div>
+                    </div>
+                )}
+
+                {track === 'institution' && menuItems.map((item) => (
                     <button
-                        key={item.id}
+                        key={`${item.id}-${track}`}
                         onClick={() => setActiveTab(item.id)}
                         className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all ${activeTab === item.id
                             ? 'bg-primary text-primary-foreground font-semibold shadow-lg shadow-primary/20'
@@ -67,7 +111,24 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     </button>
                 ))}
 
-                {isTeacher && (
+                {track === 'individual' && roadmaps.length > 0 && (
+                    <div className="pt-4 mt-4 border-t border-border space-y-1">
+                        {isOpen && <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground px-2 mb-2">My Roadmaps</p>}
+                        {roadmaps.map((roadmap) => (
+                            <button
+                                key={roadmap.id}
+                                onClick={() => onSelectRoadmap?.(roadmap.id)}
+                                className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-accent text-sm text-foreground/70 hover:text-foreground transition-all group"
+                            >
+                                <TrendingUp size={18} className="text-primary" />
+                                {isOpen && <span className="truncate flex-1 text-left">{roadmap.title}</span>}
+                                {isOpen && <span className="text-[10px] font-black text-primary bg-primary/10 px-1.5 py-0.5 rounded">{Math.round(roadmap.progress)}%</span>}
+                            </button>
+                        ))}
+                    </div>
+                )}
+
+                {isTeacher && track === 'institution' && (
                     <div className="pt-4 mt-4 border-t border-border">
                         <button
                             onClick={onOpenReviewModal}

@@ -11,6 +11,8 @@ import { Toaster } from 'sonner';
 import { ThemeProvider } from 'next-themes';
 import { TeacherReviewModal } from './components/TeacherReviewModal';
 import { JoinClassModal } from './components/JoinClassModal';
+import { CoursePageView } from './components/CoursePageView';
+import { DailyDetailView } from './components/DailyDetailView';
 
 import { useEffect } from 'react';
 
@@ -41,8 +43,28 @@ export default function App() {
     const [activeTab, setActiveTab] = useState('dashboard');
     const [selectedTopicId, setSelectedTopicId] = useState<string | null>(null);
     const [userRole, setUserRole] = useState<'teacher' | 'student' | null>(null);
+    const [track, setTrack] = useState<'institution' | 'individual'>(() => {
+        return (localStorage.getItem('cote_track') as 'institution' | 'individual') || 'institution';
+    });
+    const [selectedRoadmapId, setSelectedRoadmapId] = useState<string | null>(null);
+    const [selectedDayNumber, setSelectedDayNumber] = useState<number | null>(null);
     const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
     const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
+    const [selectedRoadmap, setSelectedRoadmap] = useState<any>(null);
+
+    useEffect(() => {
+        if (selectedRoadmapId) {
+            fetch(`http://localhost:8000/api/roadmap/${selectedRoadmapId}`)
+                .then(res => res.json())
+                .then(data => setSelectedRoadmap(data && !data.detail ? data : null))
+                .catch(err => {
+                    console.error("Failed to fetch roadmap details:", err);
+                    setSelectedRoadmap(null);
+                });
+        } else {
+            setSelectedRoadmap(null);
+        }
+    }, [selectedRoadmapId]);
     const [topics, setTopics] = useState<Record<string, Topic>>(() => {
         const saved = localStorage.getItem('cote_topics');
         if (!saved) return {};
@@ -107,8 +129,11 @@ export default function App() {
     const handleJoinClassroom = (code: string) => {
         const topicId = Object.keys(topics).find(id => topics[id].enrollmentCode === code.toUpperCase());
         if (topicId) {
-            // In a real app we'd add the student ID to the topic's enrolled list
-            // For this prototype, we'll just return true to indicate success
+            // Persist locally for prototype synchronization
+            setTopics(prev => ({
+                ...prev,
+                [topicId]: { ...prev[topicId] }
+            }));
             return true;
         }
         return false;
@@ -138,14 +163,34 @@ export default function App() {
         return (
             <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
                 <div className="bg-background text-foreground">
-                    <LoginView onLogin={(role) => setUserRole(role)} />
+                    <LoginView onLogin={(role, track) => {
+                        // Combined update to minimize re-renders and potential race conditions
+                        setUserRole(role);
+                        setTrack(track);
+                        localStorage.setItem('cote_track', track);
+                        setSelectedTopicId(null);
+                        setSelectedRoadmapId(null);
+                        setSelectedDayNumber(null);
+                        setActiveTab('dashboard');
+                    }} />
                     <Toaster position="top-right" />
                 </div>
             </ThemeProvider>
         );
     }
 
-    // Determine current title
+
+    const handleSelectDay = (day: any) => {
+        setSelectedDayNumber(day.day_number);
+    };
+
+    const handleCompleteDay = () => {
+        // Refresh roadmap data to get updated progress
+        fetch(`http://localhost:8000/api/roadmap/${selectedRoadmapId}`)
+            .then(res => res.json())
+            .then(data => setSelectedRoadmap(data))
+            .catch(err => console.error(err));
+    };
     let navbarTitle = "C.O.T.E.ai";
     const selectedTopic = selectedTopicId ? topics[selectedTopicId] : null;
     if (selectedTopic) {
@@ -159,29 +204,49 @@ export default function App() {
     const handleTabChange = (tab: string) => {
         setActiveTab(tab);
         setSelectedTopicId(null); // Clear selected topic to ensure we exit classroom view
+        setSelectedRoadmapId(null);
+        setSelectedDayNumber(null);
+    };
+
+    const handleTrackChange = (newTrack: 'institution' | 'individual') => {
+        setTrack(newTrack);
+        localStorage.setItem('cote_track', newTrack);
+        setSelectedTopicId(null);
+        setSelectedRoadmapId(null);
+        setSelectedDayNumber(null);
+        setActiveTab('dashboard');
     };
 
     return (
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <div className="min-h-screen bg-background text-foreground flex">
                 <Sidebar
+                    key={`sidebar-${track}`}
                     isOpen={isSidebarOpen}
                     setIsOpen={setIsSidebarOpen}
                     activeTab={activeTab}
                     setActiveTab={handleTabChange}
                     userRole={userRole}
+                    track={track}
+                    setTrack={handleTrackChange}
                     onLogout={() => {
                         setUserRole(null);
                         setSelectedTopicId(null);
                         setActiveTab('dashboard');
                     }}
                     onOpenReviewModal={() => setIsReviewModalOpen(true)}
+                    onSelectRoadmap={(id) => {
+                        setSelectedRoadmapId(id);
+                        setSelectedTopicId(null);
+                        setSelectedDayNumber(null);
+                    }}
                 />
 
                 <div className={`flex-1 flex flex-col min-w-0 h-screen transition-all duration-300 ${isSidebarOpen ? 'lg:ml-64' : 'lg:ml-20'}`}>
                     <Navbar
+                        key={`navbar-${track}`}
                         onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                        title={navbarTitle}
+                        title={track === 'individual' ? 'Personal Learning Studio' : navbarTitle}
                         userRole={userRole}
                         onJoinClassClick={() => setIsJoinModalOpen(true)}
                         onClassroomsClick={() => {
@@ -190,8 +255,25 @@ export default function App() {
                         }}
                     />
 
-                    <main className={`flex-1 overflow-y-auto ${selectedTopic ? 'h-full overflow-hidden flex flex-col' : ''}`}>
-                        {selectedTopic ? (
+                    <main
+                        key={`main-${track}`}
+                        className={`flex-1 overflow-y-auto ${selectedTopic ? 'h-full overflow-hidden flex flex-col' : ''}`}
+                    >
+                        {selectedDayNumber && selectedRoadmap ? (
+                            <DailyDetailView
+                                day={selectedRoadmap?.weeks?.flatMap((w: any) => w.days || []).find((d: any) => d.day_number === selectedDayNumber)}
+                                roadmapId={selectedRoadmapId!}
+                                onBack={() => setSelectedDayNumber(null)}
+                                onComplete={handleCompleteDay}
+                            />
+                        ) : selectedRoadmap ? (
+                            <CoursePageView
+                                roadmap={selectedRoadmap}
+                                onBack={() => setSelectedRoadmapId(null)}
+                                onSelectDay={handleSelectDay}
+                                completedDays={selectedRoadmap.completed_days || []}
+                            />
+                        ) : selectedTopic ? (
                             <MaterialsHub
                                 topic={selectedTopic}
                                 onBack={handleBackToDashboard}
@@ -205,12 +287,17 @@ export default function App() {
                                 userRole={userRole}
                             />
                         ) : activeTab === 'assessments' ? (
-                            <AssessmentPathView userRole={userRole} />
+                            <AssessmentPathView
+                                userRole={userRole}
+                                topics={Object.values(topics)}
+                            />
                         ) : (
                             <Dashboard
                                 topics={Object.values(topics)}
                                 onSelectTopic={handleSelectTopic}
                                 userRole={userRole}
+                                track={track}
+                                onSelectRoadmap={(id) => setSelectedRoadmapId(id)}
                                 onJoinClass={handleJoinClassroom}
                                 onUploadComplete={handleUploadComplete}
                                 onNavigateToCreateClass={() => setActiveTab('progress')}
@@ -222,7 +309,7 @@ export default function App() {
                     </main>
                 </div>
 
-                <Chatbot sessionId={selectedTopicId} />
+                <Chatbot sessionId={selectedTopicId || selectedRoadmapId || 'general'} track={track} />
                 <Toaster position="top-right" />
                 {userRole === 'teacher' && (
                     <TeacherReviewModal

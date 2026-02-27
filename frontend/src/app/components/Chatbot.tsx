@@ -34,10 +34,11 @@ const Mermaid = ({ chart }: { chart: string }) => {
 };
 
 interface ChatbotProps {
-    sessionId?: string | null;
+    sessionId: string | null;
+    track?: 'institution' | 'individual';
 }
 
-export const Chatbot: React.FC<ChatbotProps> = ({ sessionId }) => {
+export const Chatbot: React.FC<ChatbotProps> = ({ sessionId, track = 'institution' }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [language, setLanguage] = useState<'english' | 'hindi' | 'telugu' | null>(null);
     const [classrooms, setClassrooms] = useState<string[]>([]);
@@ -103,7 +104,7 @@ export const Chatbot: React.FC<ChatbotProps> = ({ sessionId }) => {
         console.log("🤖 Chatbot Request:", { selectedClassroom, input, language });
 
         try {
-            const url = `http://localhost:8000/ask?session_id=${selectedClassroom}&query=${encodeURIComponent(input)}&language=${language}`;
+            const url = `http://localhost:8000/ask?session_id=${sessionId || selectedClassroom}&query=${encodeURIComponent(input)}&language=${language}&track=${track}`;
             console.log("🔗 Fetching URL:", url);
             const response = await fetch(url, {
                 method: 'POST',

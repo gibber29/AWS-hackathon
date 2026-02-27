@@ -62,3 +62,15 @@
 .animate-glow {
   animation: glow 2s ease-in-out infinite;
 }
+@keyframes progress-stripe {
+  from {
+    background-position: 1rem 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
+
+.animate-progress-stripe {
+  animation: progress-stripe 1s linear infinite;
+}
