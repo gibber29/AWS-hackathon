@@ -3,6 +3,7 @@ import json
 import random
 import time
 import hashlib
+import threading
 from collections import Counter
 from typing import List, Dict, Optional, Any
 from bedrock_utils import invoke_bedrock_text
@@ -20,6 +21,15 @@ PROGRESS_FILE = os.path.join(DATA_ROOT, "user_progress.json")
 COOLDOWN_SECONDS = 600 # 10 Minutes
 
 os.makedirs(ASSESSMENT_DIR, exist_ok=True)
+_precompute_locks: Dict[str, threading.Lock] = {}
+_precompute_locks_guard = threading.Lock()
+
+
+def _get_precompute_lock(session_id: str) -> threading.Lock:
+    with _precompute_locks_guard:
+        if session_id not in _precompute_locks:
+            _precompute_locks[session_id] = threading.Lock()
+        return _precompute_locks[session_id]
 
 
 def _clean_model_json_text(content: str) -> str:
@@ -736,3 +746,49 @@ def get_all_assessments_for_teacher(session_id: str):
         chapters.append(chapter_data)
     
     return {"chapters": chapters}
+
+
+def precompute_assessments_for_session(session_id: str) -> Dict[str, Any]:
+    """
+    Pre-generates assessment caches for all chapters and all 3 levels.
+    Intended for background execution right after new uploads so teacher preview is ready.
+    """
+    lock = _get_precompute_lock(session_id)
+    if not lock.acquire(blocking=False):
+        return {"status": "busy", "session_id": session_id, "message": "Precompute already running"}
+
+    try:
+        files = get_sorted_files(session_id)
+        if not files:
+            return {"status": "empty", "session_id": session_id, "generated": 0, "failed": 0}
+
+        generated = 0
+        failed = 0
+        failures: List[Dict[str, Any]] = []
+
+        for idx, file_info in enumerate(files):
+            for level in (1, 2, 3):
+                result = generate_assessment(session_id, level, chapter_index=idx)
+                if "error" in result:
+                    failed += 1
+                    failures.append({
+                        "chapter_index": idx,
+                        "chapter_name": file_info["filename"],
+                        "level": level,
+                        "error": result.get("error", "Unknown error")
+                    })
+                else:
+                    generated += 1
+
+        summary = {
+            "status": "completed",
+            "session_id": session_id,
+            "chapters": len(files),
+            "generated": generated,
+            "failed": failed,
+            "failures": failures[:15]  # keep logs bounded
+        }
+        print(f"✅ Assessment precompute finished: {summary}")
+        return summary
+    finally:
+        lock.release()

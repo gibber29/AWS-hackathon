@@ -708,6 +708,8 @@ async def upload_files(
 
     # Trigger ingestion in background
     try:
+        # Pre-generate all assessments for teacher preview immediately after upload.
+        background_tasks.add_task(assessment_service.precompute_assessments_for_session, session_id)
         background_tasks.add_task(ingest_directory, session_dir)
     except Exception as e:
         raise HTTPException(
